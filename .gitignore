@@ -1,3 +1,9 @@
+# windows installer assets
+fluidsynth_win*/
+bundled/
+*.nsi
+*.exe
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
