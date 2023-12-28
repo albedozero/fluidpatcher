@@ -102,14 +102,9 @@ echo -e "
 "
 inform "This script installs/updates software and optional extras
 for the SquishBox or headless Raspberry Pi synth."
-warning "Always be careful when running scripts and commands copied
-from the internet. Ensure they are from a trusted source."
-echo "If you want to see what this script does before running it,
-hit ctrl-C and enter 'curl -L git.io/squishbox | more'
-View the full source code at
-https://github.com/GeekFunkLabs/fluidpatcher
-Report issues with this script at
-https://github.com/GeekFunkLabs/fluidpatcher/issues
+warning "This is a legacy version of this software."
+echo "To use the latest version, press ctrl-C and enter
+'curl -sL geekfunklabs.com/squishbox | bash'
 
 Choose your install options. An empty response will use the [default option].
 Setup will begin after all questions are answered.
@@ -230,17 +225,15 @@ if [[ $install_synth ]]; then
     sysupdate
     apt_pkg_install "python3-yaml"
 	apt_pkg_install "python3-rpi.gpio"
-    apt_pkg_install "fluid-soundfont-gm"
     apt_pkg_install "ladspa-sdk" optional
     apt_pkg_install "swh-plugins" optional
     apt_pkg_install "tap-plugins" optional
     apt_pkg_install "wah-plugins" optional
 
     # install/update fluidpatcher
-    FP_VER=`curl -s https://api.github.com/repos/GeekFunkLabs/fluidpatcher/releases/latest | sed -n '/tag_name/s|[^0-9\.]*||gp'`
-    inform "Installing/Updating FluidPatcher version $FP_VER ..."
-    wget -qO - https://github.com/GeekFunkLabs/fluidpatcher/tarball/master | tar -xzm
-    fptemp=`ls -dt GeekFunkLabs-fluidpatcher-* | head -n1`
+    inform "Installing/Updating FluidPatcher ..."
+    wget -qO - https://github.com/albedozero/fluidpatcher/tarball/master | tar -xzm
+    fptemp=`ls -dt albedozero-fluidpatcher-* | head -n1`
     cd $fptemp
     find . -type d -exec mkdir -p ../{} \;
     # copy files, but don't overwrite banks, config (i.e. yaml files)
@@ -248,14 +241,17 @@ if [[ $install_synth ]]; then
     find . -type f -name "*.yaml" -exec cp -n {} ../{} \;
     cd ..
     rm -rf $fptemp
-    ln -s /usr/share/sounds/sf2/FluidR3_GM.sf2 SquishBox/sf2/ > /dev/null
+	if ! test -e SquishBox/sf2/FluidR3_GM.sf2; then
+	    wget -q https://archive.org/download/fluidr3-gm-gs/FluidR3_GM_GS.sf2
+		mv FluidR3_GM_GS.sf2 SquishBox/sf2/FluidR3_GM.sf2
+    fi
     gcc -shared assets/patchcord.c -o patchcord.so
     sudo mv -f patchcord.so /usr/lib/ladspa
 
     # compile/install fluidsynth
+	BUILD_VER='2.3.4'
     CUR_FS_VER=`fluidsynth --version 2> /dev/null | sed -n '/runtime version/s|[^0-9\.]*||gp'`
-	FS_VER='2.3.4'
-    if [[ ! $CUR_FS_VER == $FS_VER ]]; then
+    if [[ ! $CUR_FS_VER == $BUILD_VER ]]; then
         inform "Compiling latest FluidSynth from source..."
         echo "Getting build dependencies..."
         if { grep -q ^#deb-src /etc/apt/sources.list; } then
