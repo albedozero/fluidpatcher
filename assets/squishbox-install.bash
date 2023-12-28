@@ -203,7 +203,7 @@ if yesno "Set up web-based file manager?"; then
     read -r -p "    password: " fmgr_pass < /dev/tty
 fi
 
-if yesno "Download and install ~400MB of additional soundfonts?"; then
+if noyes "Download and install ~400MB of additional soundfonts?"; then
     soundfonts=true
 fi
 
