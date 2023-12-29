@@ -203,7 +203,7 @@ if yesno "Set up web-based file manager?"; then
     read -r -p "    password: " fmgr_pass < /dev/tty
 fi
 
-if noyes "Download and install ~400MB of additional soundfonts?"; then
+if ! noyes "Download and install ~400MB of additional soundfonts?"; then
     soundfonts=true
 fi
 
@@ -395,7 +395,7 @@ EOF
     sudo usermod -a -G $USER www-data
     sudo chmod -R g+rwx $installdir/SquishBox
     f=$installdir/SquishBox
-    while [[ $f != / ]]; do chmod g+rwx "$f"; f=$(dirname "$f"); done;
+    while [[ $f != / ]]; do sudo chmod g+rwx "$f"; f=$(dirname "$f"); done;
     sudo sed -i "/UMask/d" /lib/systemd/system/php$phpver-fpm.service
     sudo sed -i "/\[Service\]/aUMask=0002" /lib/systemd/system/php$phpver-fpm.service
     # install and configure tinyfilemanager (https://tinyfilemanager.github.io)
