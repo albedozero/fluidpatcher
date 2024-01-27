@@ -106,8 +106,8 @@ warning "This installer uses a legacy version of this software, hosted at
 https://github.com/albedozero/fluidpatcher.
 The actively developed version is
 https://github.com/GeekFunkLabs/squishbox."
-inform "To install the latest version, exit this installer and enter
-curl -sL geekfunklabs.com/squishbox | bash
+inform "To install the latest version, exit this installer and enter:"
+echo "curl -sL geekfunklabs.com/squishbox | bash
 "
 
 if noyes "Are you sure you want to continue?"; then
