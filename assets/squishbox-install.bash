@@ -102,11 +102,18 @@ echo -e "
 "
 inform "This script installs/updates software and optional extras
 for the SquishBox or headless Raspberry Pi synth."
-warning "This is a legacy version of this software."
-echo "To use the latest version, press ctrl-C and enter
-'curl -sL geekfunklabs.com/squishbox | bash'
+warning "This installer uses a legacy version of this software, hosted at
+https://github.com/albedozero/fluidpatcher.
+The actively developed version is
+https://github.com/GeekFunkLabs/squishbox.
+To install the latest version, exit this installer and enter
+'curl -sL geekfunklabs.com/squishbox | bash'"
 
-Choose your install options. An empty response will use the [default option].
+if noyes "Are you sure you want to continue?"; then
+    exit
+fi
+
+echo "Choose your install options. An empty response will use the [default option].
 Setup will begin after all questions are answered.
 "
 
